@@ -3,8 +3,10 @@
 App web instalable (PWA) para llevar registro del ciclo menstrual y **pronosticar** el próximo periodo mediante una **ventana de probabilidad**, pensada para ciclos irregulares.
 
 - 📅 Registro de periodo (intensidad), síntomas, ánimo, relaciones (con/sin condón) y notas.
+- 🥚 Registro de **moco cervical** (signo de ovulación que no necesita ningún aparato); el tipo "clara de huevo" se marca en el calendario como día fértil.
 - 🔮 Predicción por **ventana de probabilidad** (rango + fecha más probable + nivel de variabilidad).
 - 🌸 Estimación de ventana fértil (con aviso: aproximada, no es método anticonceptivo).
+- 🔔 **Recordatorios**: alertas al abrir la app (retraso, ventana prevista, "registra hoy") y notificación opcional.
 - 📊 Estadísticas e historial de ciclos.
 - 🔐 Bloqueo con PIN.
 - 🩺 Informe imprimible para el médico (→ Guardar como PDF).
