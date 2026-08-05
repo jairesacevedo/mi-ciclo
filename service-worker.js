@@ -1,6 +1,6 @@
 /* Service worker: cachea la app para que funcione sin internet. */
 
-const CACHE = 'mi-ciclo-v5';
+const CACHE = 'mi-ciclo-v6';
 const ASSETS = [
   'index.html',
   'css/styles.css',
