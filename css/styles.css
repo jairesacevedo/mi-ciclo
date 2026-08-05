@@ -243,6 +243,11 @@ textarea {
 .danger { border-color: var(--danger); }
 .footer-note { text-align: center; color: var(--muted); font-size: .85rem; margin: 20px 0; }
 
+.greeting {
+  font-size: 1.15rem; font-weight: 700; color: var(--primary-dark);
+  margin: 2px 0 12px;
+}
+
 /* Banner de recordatorio en Inicio */
 .banner {
   display: flex; align-items: center; gap: 12px;

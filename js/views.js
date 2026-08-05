@@ -121,7 +121,8 @@ const Views = (() => {
         ${te ? renderEntrySummary(te) : '<p class="muted">Sin registro todavía.</p>'}
       </div>`;
 
-    el.innerHTML = banner + hero + fertileCard + todayCard;
+    const greeting = `<p class="greeting">Hola, Bonita 💗</p>`;
+    el.innerHTML = greeting + banner + hero + fertileCard + todayCard;
 
     el.querySelectorAll('[data-action="log-today"]').forEach(b =>
       b.onclick = () => openEditor(today));
@@ -259,7 +260,7 @@ const Views = (() => {
         <p class="muted">Elimina permanentemente todos los registros de este dispositivo.</p>
         <button class="btn btn-danger" id="btnClear">Borrar todos los datos</button>
       </div>
-      <p class="footer-note">Hecho con cariño para Yire 💗</p>`;
+      <p class="footer-note">Hecho con todo el amor para La Bonita 💗</p>`;
 
     el.querySelector('#btnExport').onclick = doExport;
     el.querySelector('#btnImport').onclick = () => el.querySelector('#fileImport').click();
@@ -287,6 +288,20 @@ const Views = (() => {
       sec.innerHTML = `<button class="btn btn-primary" id="btnSetPin">Activar bloqueo con PIN</button>`;
       sec.querySelector('#btnSetPin').onclick = () => Lock.createPin(ok => { if (ok) renderSettings(el); });
     }
+
+    el.querySelector('#btnClear').onclick = () => {
+      if (confirm('¿Seguro que quieres borrar TODOS los datos? Esto no se puede deshacer.')) {
+        Storage.clearAll();
+        App.render();
+      }
+    };
+
+    // Botones de tema (Automático / Claro / Oscuro).
+    const curTheme = Storage.getSetting('theme') || 'auto';
+    el.querySelectorAll('.seg').forEach(b => {
+      if (b.dataset.theme === curTheme) b.classList.add('seg-active');
+      b.onclick = () => { App.setTheme(b.dataset.theme); renderSettings(el); };
+    });
 
     renderDrive(el.querySelector('#driveCard'), () => renderSettings(el));
   }
@@ -374,17 +389,6 @@ const Views = (() => {
       catch (e) { st.textContent = '⚠️ ' + e.message; }
     };
     card.querySelector('#btnDisconnectDrive').onclick = () => { Drive.disconnect(); refresh(); };
-    el.querySelector('#btnClear').onclick = () => {
-      if (confirm('¿Seguro que quieres borrar TODOS los datos? Esto no se puede deshacer.')) {
-        Storage.clearAll();
-        App.render();
-      }
-    };
-    const curTheme = Storage.getSetting('theme') || 'auto';
-    el.querySelectorAll('.seg').forEach(b => {
-      if (b.dataset.theme === curTheme) b.classList.add('seg-active');
-      b.onclick = () => { App.setTheme(b.dataset.theme); renderSettings(el); };
-    });
   }
 
   function doExport() {

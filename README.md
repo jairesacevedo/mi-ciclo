@@ -1,4 +1,4 @@
-# Mi Ciclo · para Yire 💗
+# Mi Ciclo · La Bonita 💗
 
 App web instalable (PWA) para llevar registro del ciclo menstrual y **pronosticar** el próximo periodo mediante una **ventana de probabilidad**, pensada para ciclos irregulares.
 
@@ -91,4 +91,4 @@ js/  util · storage · predict · security · drive · report · calendar · vi
 icons/  icon.svg · icon-maskable.svg
 ```
 
-Hecho con cariño para Yire.
+Hecho con todo el amor para La Bonita.
