@@ -61,6 +61,78 @@
   }
 }
 
+/* ===== Paletas de color (elegibles en Ajustes) =====
+   'rosa' es la de siempre y usa los valores base de arriba.
+   Cada paleta define su versión clara y su versión oscura. */
+
+/* --- Durazno --- */
+:root[data-palette="durazno"] {
+  --bg: #fff5f1; --surface-2: #ffe9e0; --border: #f7dbd0;
+  --primary: #ef7f5f; --primary-dark: #d4623f; --primary-soft: #ffe3d8;
+  --accent: #e8a13c; --accent-dark: #c9832a; --accent-soft: #fdefd8;
+}
+:root[data-theme="dark"][data-palette="durazno"] {
+  --bg: #191310; --surface: #251c17; --surface-2: #302420; --border: #3c2e27;
+  --primary: #ff9c7d; --primary-dark: #ef7f5f; --primary-soft: #4a2a20;
+  --accent: #f0b661; --accent-dark: #e8a13c; --accent-soft: #4a3820;
+}
+/* --- Lavanda --- */
+:root[data-palette="lavanda"] {
+  --bg: #f6f2fd; --surface-2: #ece4fb; --border: #e0d5f5;
+  --primary: #8f6fd6; --primary-dark: #7355bd; --primary-soft: #e6dcfa;
+  --accent: #d478b8; --accent-dark: #b85a9c; --accent-soft: #fadcf0;
+}
+:root[data-theme="dark"][data-palette="lavanda"] {
+  --bg: #151320; --surface: #211d2e; --surface-2: #2b2639; --border: #372f47;
+  --primary: #b094ec; --primary-dark: #8f6fd6; --primary-soft: #332a4f;
+  --accent: #ec98d0; --accent-dark: #d478b8; --accent-soft: #45213a;
+}
+/* --- Menta --- */
+:root[data-palette="menta"] {
+  --bg: #f1faf6; --surface-2: #ddf2e8; --border: #cfeade;
+  --primary: #3fb98a; --primary-dark: #2c9a70; --primary-soft: #d5f2e6;
+  --accent: #5bb8c4; --accent-dark: #3f9aa6; --accent-soft: #d8f0f3;
+}
+:root[data-theme="dark"][data-palette="menta"] {
+  --bg: #101815; --surface: #18241f; --surface-2: #1f2e28; --border: #2a3b34;
+  --primary: #5fd6a6; --primary-dark: #3fb98a; --primary-soft: #16382a;
+  --accent: #74d0dc; --accent-dark: #5bb8c4; --accent-soft: #1a3538;
+}
+/* --- Cielo --- */
+:root[data-palette="cielo"] {
+  --bg: #f1f7fd; --surface-2: #dfecfa; --border: #d3e4f5;
+  --primary: #4d95d6; --primary-dark: #367ab8; --primary-soft: #d8ebfa;
+  --accent: #6fc4c4; --accent-dark: #4da5a5; --accent-soft: #d9f2f2;
+}
+:root[data-theme="dark"][data-palette="cielo"] {
+  --bg: #101620; --surface: #18212e; --surface-2: #1f2a38; --border: #2a3746;
+  --primary: #74b3ec; --primary-dark: #4d95d6; --primary-soft: #1e3348;
+  --accent: #8ad8d8; --accent-dark: #6fc4c4; --accent-soft: #1e3838;
+}
+/* Versiones oscuras cuando el tema sigue al sistema */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"])[data-palette="durazno"] {
+    --bg: #191310; --surface: #251c17; --surface-2: #302420; --border: #3c2e27;
+    --primary: #ff9c7d; --primary-dark: #ef7f5f; --primary-soft: #4a2a20;
+    --accent: #f0b661; --accent-dark: #e8a13c; --accent-soft: #4a3820;
+  }
+  :root:not([data-theme="light"])[data-palette="lavanda"] {
+    --bg: #151320; --surface: #211d2e; --surface-2: #2b2639; --border: #372f47;
+    --primary: #b094ec; --primary-dark: #8f6fd6; --primary-soft: #332a4f;
+    --accent: #ec98d0; --accent-dark: #d478b8; --accent-soft: #45213a;
+  }
+  :root:not([data-theme="light"])[data-palette="menta"] {
+    --bg: #101815; --surface: #18241f; --surface-2: #1f2e28; --border: #2a3b34;
+    --primary: #5fd6a6; --primary-dark: #3fb98a; --primary-soft: #16382a;
+    --accent: #74d0dc; --accent-dark: #5bb8c4; --accent-soft: #1a3538;
+  }
+  :root:not([data-theme="light"])[data-palette="cielo"] {
+    --bg: #101620; --surface: #18212e; --surface-2: #1f2a38; --border: #2a3746;
+    --primary: #74b3ec; --primary-dark: #4d95d6; --primary-soft: #1e3348;
+    --accent: #8ad8d8; --accent-dark: #6fc4c4; --accent-soft: #1e3838;
+  }
+}
+
 * { box-sizing: border-box; }
 
 body {
@@ -180,10 +252,12 @@ main { padding: 0 16px; max-width: 620px; margin: 0 auto; }
 .cal-marks { font-size: .6rem; line-height: 1; height: .7rem; }
 .cal-cell.is-today { outline: 2px solid var(--primary); font-weight: 700; }
 
-.cal-cell.f-spotting { background: #f7d4e2; }
-.cal-cell.f-light { background: #f2a9c6; color: #fff; }
-.cal-cell.f-medium { background: #e5679b; color: #fff; }
-.cal-cell.f-heavy { background: #c94b80; color: #fff; }
+/* Los días de periodo siguen la paleta elegida (con respaldo en rosa
+   para navegadores sin soporte de color-mix). */
+.cal-cell.f-spotting { background: #f7d4e2; background: color-mix(in srgb, var(--primary) 28%, var(--surface)); }
+.cal-cell.f-light { background: #f2a9c6; background: color-mix(in srgb, var(--primary) 60%, var(--surface)); color: #fff; }
+.cal-cell.f-medium { background: var(--primary); color: #fff; }
+.cal-cell.f-heavy { background: var(--primary-dark); color: #fff; }
 .cal-cell.pred-window { background: repeating-linear-gradient(45deg, var(--primary-soft), var(--primary-soft) 5px, var(--surface) 5px, var(--surface) 10px); }
 .cal-cell.pred-likely { outline: 2px dashed var(--primary); }
 .cal-cell.fertile { background: var(--fertile-soft); }
@@ -191,7 +265,7 @@ main { padding: 0 16px; max-width: 620px; margin: 0 auto; }
 
 .cal-legend { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 14px; font-size: .78rem; color: var(--muted); }
 .cal-legend .dot { display: inline-block; width: 12px; height: 12px; border-radius: 4px; vertical-align: middle; margin-right: 4px; }
-.dot.f-medium { background: #e5679b; }
+.dot.f-medium { background: var(--primary); }
 .dot.pred-window { background: var(--primary-soft); border: 1px solid var(--primary); }
 .dot.fertile { background: var(--fertile-soft); border: 1px solid var(--fertile); }
 
@@ -252,12 +326,30 @@ textarea {
 .danger { border-color: var(--danger); }
 .footer-note { text-align: center; color: var(--muted); font-size: .85rem; margin: 20px 0; }
 
+.greeting-row { display: flex; align-items: center; gap: 12px; margin: 2px 0 12px; }
 .greeting {
   font-size: 1.15rem; font-weight: 700;
   background: linear-gradient(90deg, var(--primary-dark), var(--accent-dark));
   -webkit-background-clip: text; background-clip: text; color: transparent;
-  margin: 2px 0 12px;
+  margin: 0;
 }
+.avatar {
+  width: 52px; height: 52px; border-radius: 50%; object-fit: cover;
+  border: 2px solid var(--primary); box-shadow: var(--shadow); flex-shrink: 0;
+}
+.avatar-lg { width: 76px; height: 76px; }
+
+/* Selector de paletas */
+.palette-grid { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+.pal {
+  border: 2px solid transparent; background: var(--surface-2); border-radius: 14px;
+  padding: 8px 10px; cursor: pointer; font-family: inherit; color: var(--text);
+  display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: .74rem;
+}
+.pal-dots { display: flex; }
+.pal-dots i { width: 18px; height: 18px; border-radius: 50%; display: block; }
+.pal-dots i + i { margin-left: -6px; }
+.pal.sel { border-color: var(--primary); background: var(--primary-soft); font-weight: 600; }
 
 /* Banner de recordatorio en Inicio */
 .banner {
@@ -275,6 +367,13 @@ textarea {
 
 .label-hint { font-weight: 400; color: var(--muted); font-size: .78rem; }
 .cal-cell.mucus-peak { box-shadow: inset 0 -4px 0 var(--fertile); }
+
+.avatar-row { display: flex; align-items: center; gap: 14px; margin-bottom: 10px; }
+.avatar-empty {
+  display: grid; place-items: center; font-size: 1.6rem;
+  background: var(--surface-2); border-style: dashed;
+}
+.mini-label { display: block; font-size: .78rem; color: var(--muted); margin-bottom: 4px; }
 
 .field-inline { display: block; margin: 8px 0; }
 .field-inline input {

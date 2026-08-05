@@ -40,6 +40,7 @@ const App = (() => {
 
   function init() {
     applyTheme(Storage.getSetting('theme') || 'auto');
+    Personalize.applyPalette(Personalize.getPalette());
 
     document.querySelectorAll('.tab').forEach(t =>
       t.onclick = () => setView(t.dataset.view));

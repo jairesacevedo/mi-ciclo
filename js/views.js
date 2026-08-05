@@ -121,7 +121,12 @@ const Views = (() => {
         ${te ? renderEntrySummary(te) : '<p class="muted">Sin registro todavía.</p>'}
       </div>`;
 
-    const greeting = `<p class="greeting">Hola, Bonita 💗</p>`;
+    const photo = Personalize.getPhoto();
+    const greeting = `
+      <div class="greeting-row">
+        ${photo ? `<img class="avatar" src="${photo}" alt="Foto" />` : ''}
+        <p class="greeting">${escapeHtml(Personalize.greetingText())}</p>
+      </div>`;
     el.innerHTML = greeting + banner + hero + fertileCard + todayCard;
 
     el.querySelectorAll('[data-action="log-today"]').forEach(b =>
@@ -248,7 +253,41 @@ const Views = (() => {
         <div class="btn-row" id="securityBtns"></div>
       </div>
       <div class="card">
-        <h3>🎨 Tema</h3>
+        <h3>✨ Personalización</h3>
+        <div class="avatar-row">
+          ${Personalize.getPhoto()
+            ? `<img class="avatar avatar-lg" src="${Personalize.getPhoto()}" alt="Foto" />`
+            : '<div class="avatar avatar-lg avatar-empty">📷</div>'}
+          <div class="btn-row">
+            <button class="btn btn-ghost btn-sm" id="btnPhoto">${Personalize.getPhoto() ? 'Cambiar foto' : 'Poner foto'}</button>
+            ${Personalize.getPhoto() ? '<button class="btn btn-ghost btn-sm" id="btnPhotoDel">Quitar</button>' : ''}
+          </div>
+        </div>
+        <input type="file" id="filePhoto" accept="image/*" hidden />
+        <label class="field-inline">
+          <span class="mini-label">Nombre o apodo</span>
+          <input type="text" id="nameInput" maxlength="40" placeholder="Bonita" value="${escapeHtml(Storage.getSetting('displayName') || '')}" />
+        </label>
+        <label class="field-inline">
+          <span class="mini-label">Saludo personalizado (opcional)</span>
+          <input type="text" id="greetInput" maxlength="80" placeholder="Hola, Bonita 💗" value="${escapeHtml(Personalize.getGreeting())}" />
+        </label>
+        <div class="btn-row"><button class="btn btn-primary" id="btnSavePersonal">Guardar</button></div>
+        <p class="muted" id="personalStatus"></p>
+      </div>
+      <div class="card">
+        <h3>🎨 Colores</h3>
+        <p class="muted">Elige la paleta que más le guste.</p>
+        <div class="palette-grid">
+          ${Personalize.PALETTES.map(p => `
+            <button class="pal ${Personalize.getPalette() === p.v ? 'sel' : ''}" data-pal="${p.v}">
+              <span class="pal-dots"><i style="background:${p.c1}"></i><i style="background:${p.c2}"></i></span>
+              <span>${p.label}</span>
+            </button>`).join('')}
+        </div>
+      </div>
+      <div class="card">
+        <h3>🌗 Tema</h3>
         <div class="btn-row">
           <button class="btn btn-ghost seg" data-theme="auto">Automático</button>
           <button class="btn btn-ghost seg" data-theme="light">Claro</button>
@@ -295,6 +334,30 @@ const Views = (() => {
         App.render();
       }
     };
+
+    // Personalización: foto, nombre y saludo.
+    const pStatus = el.querySelector('#personalStatus');
+    el.querySelector('#btnPhoto').onclick = () => el.querySelector('#filePhoto').click();
+    el.querySelector('#filePhoto').onchange = async (ev) => {
+      const f = ev.target.files[0];
+      if (!f) return;
+      pStatus.textContent = 'Procesando foto…';
+      try { await Personalize.setPhotoFromFile(f); App.render(); renderSettings(el); }
+      catch (e) { pStatus.textContent = '⚠️ ' + e.message; }
+    };
+    const delPhoto = el.querySelector('#btnPhotoDel');
+    if (delPhoto) delPhoto.onclick = () => { Personalize.removePhoto(); App.render(); renderSettings(el); };
+    el.querySelector('#btnSavePersonal').onclick = () => {
+      Personalize.setName(el.querySelector('#nameInput').value);
+      Personalize.setGreeting(el.querySelector('#greetInput').value);
+      pStatus.textContent = '✓ Guardado';
+      App.render();
+    };
+
+    // Paletas de color.
+    el.querySelectorAll('[data-pal]').forEach(b => {
+      b.onclick = () => { Personalize.setPalette(b.dataset.pal); renderSettings(el); };
+    });
 
     // Botones de tema (Automático / Claro / Oscuro).
     const curTheme = Storage.getSetting('theme') || 'auto';

@@ -10,6 +10,12 @@ const DIAS_CORTO = ['D', 'L', 'M', 'M', 'J', 'V', 'S']; // semana inicia domingo
 
 function pad2(n) { return String(n).padStart(2, '0'); }
 
+/** Escapa texto escrito por el usuario antes de insertarlo como HTML. */
+function escapeHtml(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, c =>
+    ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
 /** Date -> 'YYYY-MM-DD' (local) */
 function fmt(d) {
   return `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`;
