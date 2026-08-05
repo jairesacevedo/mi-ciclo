@@ -1,0 +1,26 @@
+{
+  "name": "Mi Ciclo · para Yire",
+  "short_name": "Mi Ciclo",
+  "description": "Seguimiento del ciclo menstrual con predicción por ventana de probabilidad, pensado para ciclos irregulares. Todo se guarda en tu dispositivo.",
+  "lang": "es",
+  "start_url": "index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#fdf3f7",
+  "theme_color": "#e5679b",
+  "icons": [
+    {
+      "src": "icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-maskable.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

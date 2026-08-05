@@ -1,0 +1,14 @@
+# Sistema
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Respaldos locales que exporte el usuario
+mi-ciclo-respaldo-*.json
+
+# Editores
+.vscode/
+.idea/
+
+# Configuración local de Claude Code
+.claude/
