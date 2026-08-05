@@ -4,6 +4,7 @@
 const Report = (() => {
 
   const FLOW_LABEL = { spotting: 'Manchado', light: 'Ligero', medium: 'Medio', heavy: 'Abundante' };
+  const MUCUS_LABEL = { seco: 'Seco', pegajoso: 'Pegajoso', cremoso: 'Cremoso', acuoso: 'Acuoso', clara: 'Moco clara de huevo' };
 
   function buildHTML() {
     const s = Predict.stats();
@@ -40,8 +41,9 @@ const Report = (() => {
     let log = '';
     for (const [date, e] of entries) {
       const flow = e.flow && e.flow !== 'none' ? FLOW_LABEL[e.flow] : '';
+      const mucus = e.mucus ? MUCUS_LABEL[e.mucus] || e.mucus : '';
       const rel = e.intimacy ? (e.condom ? 'Relación (con condón)' : 'Relación (sin condón)') : '';
-      const det = [flow, e.mood, (e.symptoms || []).join(', '), rel, e.notes].filter(Boolean).join(' · ');
+      const det = [flow, mucus, e.mood, (e.symptoms || []).join(', '), rel, e.notes].filter(Boolean).join(' · ');
       log += `<tr><td>${shortDate(date)}</td><td>${det || '—'}</td></tr>`;
     }
     const registro = entries.length ? `

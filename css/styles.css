@@ -243,6 +243,23 @@ textarea {
 .danger { border-color: var(--danger); }
 .footer-note { text-align: center; color: var(--muted); font-size: .85rem; margin: 20px 0; }
 
+/* Banner de recordatorio en Inicio */
+.banner {
+  display: flex; align-items: center; gap: 12px;
+  border-radius: var(--radius); padding: 14px 16px; margin-bottom: 14px;
+  border: 1px solid var(--border); box-shadow: var(--shadow);
+}
+.banner-txt { flex: 1; font-size: .9rem; line-height: 1.45; }
+.banner .btn { flex-shrink: 0; }
+.ban-delay { background: #fbe3e3; border-color: #eab0b0; color: #7a2626; }
+.ban-window { background: var(--primary-soft); border-color: var(--primary); }
+.ban-soon { background: #fdeef4; }
+.ban-log { background: var(--surface-2); }
+:root[data-theme="dark"] .ban-delay { background: #3d1e1e; border-color: #6a3535; color: #f0b8b8; }
+
+.label-hint { font-weight: 400; color: var(--muted); font-size: .78rem; }
+.cal-cell.mucus-peak { box-shadow: inset 0 -4px 0 var(--fertile); }
+
 .field-inline { display: block; margin: 8px 0; }
 .field-inline input {
   width: 100%; border: 1px solid var(--border); border-radius: 12px; padding: 10px;

@@ -23,6 +23,16 @@ const Views = (() => {
     { v: 'con energía', emoji: '⚡' },
   ];
 
+  // Moco cervical: "clara" (tipo clara de huevo) es el signo de mayor fertilidad.
+  const MUCUS = [
+    { v: 'seco', label: 'Seco', emoji: '🌵' },
+    { v: 'pegajoso', label: 'Pegajoso', emoji: '•' },
+    { v: 'cremoso', label: 'Cremoso', emoji: '🥛' },
+    { v: 'acuoso', label: 'Acuoso', emoji: '💧' },
+    { v: 'clara', label: 'Clara de huevo', emoji: '🥚' },
+  ];
+  const MUCUS_LABEL = Object.fromEntries(MUCUS.map(m => [m.v, m.label]));
+
   /* ---------------- INICIO ---------------- */
   function renderHome(el) {
     const np = Predict.nextPeriod();
@@ -88,6 +98,19 @@ const Views = (() => {
         </div>`;
     }
 
+    // Banner de recordatorio/alerta (retraso, ventana, o "registra hoy").
+    const alert = Reminders.check();
+    let banner = '';
+    if (alert) {
+      const cls = { delay: 'ban-delay', window: 'ban-window', soon: 'ban-soon', logToday: 'ban-log' }[alert.type];
+      const showBtn = alert.type === 'delay' || alert.type === 'logToday';
+      banner = `
+        <div class="banner ${cls}">
+          <div class="banner-txt"><b>${alert.title}</b><br>${alert.message}</div>
+          ${showBtn ? '<button class="btn btn-primary btn-sm" data-action="log-today">Registrar</button>' : ''}
+        </div>`;
+    }
+
     const te = Storage.getEntry(today);
     const todayCard = `
       <div class="card">
@@ -98,7 +121,7 @@ const Views = (() => {
         ${te ? renderEntrySummary(te) : '<p class="muted">Sin registro todavía.</p>'}
       </div>`;
 
-    el.innerHTML = hero + fertileCard + todayCard;
+    el.innerHTML = banner + hero + fertileCard + todayCard;
 
     el.querySelectorAll('[data-action="log-today"]').forEach(b =>
       b.onclick = () => openEditor(today));
@@ -114,6 +137,8 @@ const Views = (() => {
       const m = MOODS.find(o => o.v === e.mood);
       parts.push(`<span class="pill">${m ? m.emoji : ''} ${e.mood}</span>`);
     }
+    if (e.mucus)
+      parts.push(`<span class="pill">${e.mucus === 'clara' ? '🥚' : '💧'} Moco: ${MUCUS_LABEL[e.mucus] || e.mucus}</span>`);
     if (e.symptoms && e.symptoms.length)
       parts.push(`<span class="pill">🩹 ${e.symptoms.join(', ')}</span>`);
     if (e.intimacy)
@@ -203,6 +228,17 @@ const Views = (() => {
         <button class="btn btn-primary" id="btnReport">Generar informe</button>
       </div>
       <div class="card">
+        <h3>🔔 Recordatorios</h3>
+        <p class="muted">Al abrir la app verás avisos de <b>retraso</b>, de la <b>ventana</b> prevista
+        y si aún no registraste el día. Si activas las notificaciones, además recibirás
+        <b>un aviso al abrir</b> cuando haya algo importante.
+        <br><small>Sin servidor no hay avisos con la app cerrada; se muestran al abrirla.</small></p>
+        <label class="switch-row">
+          <input type="checkbox" id="notifToggle" ${Reminders.isEnabled() ? 'checked' : ''} />
+          <span>Activar notificaciones</span>
+        </label>
+      </div>
+      <div class="card">
         <h3>🔐 Seguridad</h3>
         <p class="muted">${Lock.isEnabled()
           ? 'La app pedirá tu PIN al abrirse.'
@@ -229,6 +265,16 @@ const Views = (() => {
     el.querySelector('#btnImport').onclick = () => el.querySelector('#fileImport').click();
     el.querySelector('#fileImport').onchange = doImport;
     el.querySelector('#btnReport').onclick = () => Report.print();
+
+    // Toggle de notificaciones (pide permiso al activar).
+    el.querySelector('#notifToggle').onchange = async (ev) => {
+      if (ev.target.checked) {
+        const ok = await Reminders.requestPermission();
+        if (!ok) { ev.target.checked = false; alert('El navegador no dio permiso para notificaciones.'); }
+      } else {
+        Reminders.disable();
+      }
+    };
 
     // Botones de seguridad (PIN) según si ya hay uno configurado.
     const sec = el.querySelector('#securityBtns');
@@ -375,7 +421,8 @@ const Views = (() => {
     editingDate = dateStr;
     const existing = Storage.getEntry(dateStr);
     draft = existing ? structuredClone(existing)
-      : { flow: 'none', symptoms: [], mood: '', intimacy: false, condom: false, notes: '' };
+      : { flow: 'none', symptoms: [], mood: '', mucus: '', intimacy: false, condom: false, notes: '' };
+    if (draft.mucus === undefined) draft.mucus = '';
 
     document.getElementById('editorTitle').textContent = humanDate(dateStr);
     renderEditorBody();
@@ -423,6 +470,16 @@ const Views = (() => {
       </div>
 
       <div class="field">
+        <label>Moco cervical <span class="label-hint">(clara de huevo = más fértil)</span></label>
+        <div class="opt-row wrap">
+          ${MUCUS.map(m => `
+            <button class="opt chip-opt ${draft.mucus === m.v ? 'sel' : ''}" data-mucus="${m.v}">
+              ${m.emoji} ${m.label}
+            </button>`).join('')}
+        </div>
+      </div>
+
+      <div class="field">
         <label>Relaciones</label>
         <div class="opt-row">
           <button class="opt ${draft.intimacy ? 'sel' : ''}" data-intimacy="1"><span class="opt-emoji">❤️</span><span>Sí hubo</span></button>
@@ -441,6 +498,7 @@ const Views = (() => {
 
     b.querySelectorAll('[data-flow]').forEach(el => el.onclick = () => { draft.flow = el.dataset.flow; renderEditorBody(); });
     b.querySelectorAll('[data-mood]').forEach(el => el.onclick = () => { draft.mood = (draft.mood === el.dataset.mood ? '' : el.dataset.mood); renderEditorBody(); });
+    b.querySelectorAll('[data-mucus]').forEach(el => el.onclick = () => { draft.mucus = (draft.mucus === el.dataset.mucus ? '' : el.dataset.mucus); renderEditorBody(); });
     b.querySelectorAll('[data-sym]').forEach(el => el.onclick = () => {
       const s = el.dataset.sym;
       const i = draft.symptoms.indexOf(s);

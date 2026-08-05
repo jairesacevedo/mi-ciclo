@@ -1,6 +1,6 @@
 /* Service worker: cachea la app para que funcione sin internet. */
 
-const CACHE = 'mi-ciclo-v3';
+const CACHE = 'mi-ciclo-v4';
 const ASSETS = [
   'index.html',
   'css/styles.css',
@@ -9,6 +9,7 @@ const ASSETS = [
   'js/predict.js',
   'js/security.js',
   'js/drive.js',
+  'js/reminders.js',
   'js/report.js',
   'js/calendar.js',
   'js/views.js',

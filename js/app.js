@@ -65,6 +65,7 @@ const App = (() => {
     Lock.guard(() => {
       setView('home');
       Drive.trySilent().then(ok => { if (ok) console.info('Drive conectado (auto-respaldo activo).'); });
+      Reminders.maybeNotify();
     });
 
     // Registra el service worker para funcionar offline (solo bajo http/https).

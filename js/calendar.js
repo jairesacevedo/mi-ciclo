@@ -49,6 +49,7 @@ const Calendar = (() => {
       if (dateStr === ctx.fertile.ovulation) classes.push('ovulation');
     }
 
+    if (e && e.mucus === 'clara') { classes.push('mucus-peak'); marks.push('🥚'); }
     if (e && e.intimacy) marks.push(e.condom ? '🛡️' : '❤️');
     if (e && e.symptoms && e.symptoms.length) marks.push('•');
 
@@ -99,6 +100,7 @@ const Calendar = (() => {
         <span><i class="dot f-medium"></i> Periodo</span>
         <span><i class="dot pred-window"></i> Periodo previsto</span>
         <span><i class="dot fertile"></i> Días fértiles</span>
+        <span>🥚 Moco fértil</span>
         <span>❤️ Relación · 🛡️ Con condón</span>
       </div>`;
 

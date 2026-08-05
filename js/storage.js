@@ -59,9 +59,10 @@ const Storage = (() => {
     const noFlow = !e.flow || e.flow === 'none';
     const noSym = !e.symptoms || e.symptoms.length === 0;
     const noMood = !e.mood;
+    const noMucus = !e.mucus;
     const noIntimacy = !e.intimacy;
     const noNotes = !e.notes || !e.notes.trim();
-    return noFlow && noSym && noMood && noIntimacy && noNotes;
+    return noFlow && noSym && noMood && noMucus && noIntimacy && noNotes;
   }
 
   /** Lista ordenada de [fecha, entry] por fecha ascendente. */
