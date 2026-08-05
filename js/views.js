@@ -111,6 +111,30 @@ const Views = (() => {
         </div>`;
     }
 
+    // Mensaje de amor del día.
+    const loveMsg = Love.today();
+    const loveCard = loveMsg
+      ? `<div class="card love-card"><span class="love-ico">💌</span><p>${escapeHtml(loveMsg)}</p></div>`
+      : '';
+
+    // Fecha especial: hoy, o cuenta regresiva a la próxima.
+    const nx = Fechas.next();
+    let fechaCard = '';
+    if (nx) {
+      const years = Fechas.yearsAt(nx, nx.when);
+      const sufijo = years ? ` · ${years} año${years === 1 ? '' : 's'}` : '';
+      fechaCard = nx.days === 0
+        ? `<div class="card special-card is-today-special">
+             <span class="love-ico">🎉</span>
+             <p><b>¡Hoy es ${escapeHtml(nx.title)}!</b>${sufijo}</p>
+           </div>`
+        : `<div class="card special-card">
+             <span class="love-ico">💖</span>
+             <p><b>${escapeHtml(nx.title)}</b><br>
+             <span class="muted">Faltan ${nx.days} día${nx.days === 1 ? '' : 's'} · ${shortDate(nx.when)}${sufijo}</span></p>
+           </div>`;
+    }
+
     const te = Storage.getEntry(today);
     const todayCard = `
       <div class="card">
@@ -127,7 +151,7 @@ const Views = (() => {
         ${photo ? `<img class="avatar" src="${photo}" alt="Foto" />` : ''}
         <p class="greeting">${escapeHtml(Personalize.greetingText())}</p>
       </div>`;
-    el.innerHTML = greeting + banner + hero + fertileCard + todayCard;
+    el.innerHTML = greeting + banner + loveCard + fechaCard + hero + fertileCard + todayCard;
 
     el.querySelectorAll('[data-action="log-today"]').forEach(b =>
       b.onclick = () => openEditor(today));
@@ -276,6 +300,31 @@ const Views = (() => {
         <p class="muted" id="personalStatus"></p>
       </div>
       <div class="card">
+        <h3>💌 Mensajes de amor</h3>
+        <p class="muted">Escribe un mensaje por línea. La app le mostrará uno distinto cada día.</p>
+        <textarea id="loveInput" rows="4" placeholder="Eres lo mejor que me ha pasado&#10;Te amo, mi Bonita&#10;Gracias por tu sonrisa">${escapeHtml(Love.asText())}</textarea>
+        <div class="btn-row"><button class="btn btn-primary" id="btnSaveLove">Guardar mensajes</button></div>
+        <p class="muted" id="loveStatus">${Love.get().length ? `Tienes ${Love.get().length} mensaje(s). Hoy se muestra: “${escapeHtml(Love.today())}”` : ''}</p>
+      </div>
+      <div class="card">
+        <h3>💖 Fechas especiales</h3>
+        <p class="muted">Aniversario, cumpleaños… se marcan en el calendario y verás la cuenta regresiva.</p>
+        <label class="field-inline">
+          <span class="mini-label">Nombre</span>
+          <input type="text" id="fechaTitle" maxlength="60" placeholder="Nuestro aniversario" />
+        </label>
+        <label class="field-inline">
+          <span class="mini-label">Fecha</span>
+          <input type="date" id="fechaDate" />
+        </label>
+        <label class="switch-row">
+          <input type="checkbox" id="fechaYearly" checked />
+          <span>Se repite cada año</span>
+        </label>
+        <div class="btn-row"><button class="btn btn-primary" id="btnAddFecha">Agregar fecha</button></div>
+        <ul class="fecha-list" id="fechaList"></ul>
+      </div>
+      <div class="card">
         <h3>🎨 Colores</h3>
         <p class="muted">Elige la paleta que más le guste.</p>
         <div class="palette-grid">
@@ -353,6 +402,33 @@ const Views = (() => {
       pStatus.textContent = '✓ Guardado';
       App.render();
     };
+
+    // Mensajes de amor.
+    el.querySelector('#btnSaveLove').onclick = () => {
+      Love.setFromText(el.querySelector('#loveInput').value);
+      App.render();
+      renderSettings(el);
+    };
+
+    // Fechas especiales: agregar y listar.
+    el.querySelector('#btnAddFecha').onclick = () => {
+      const t = el.querySelector('#fechaTitle').value.trim();
+      const d = el.querySelector('#fechaDate').value;
+      if (!t || !d) { alert('Escribe el nombre y elige la fecha.'); return; }
+      Fechas.add(t, d, el.querySelector('#fechaYearly').checked);
+      App.render();
+      renderSettings(el);
+    };
+    const flist = el.querySelector('#fechaList');
+    const fechas = Fechas.get();
+    flist.innerHTML = fechas.length
+      ? fechas.map(f => `<li><span>${f.yearly ? '🔁' : '📌'} <b>${escapeHtml(f.title)}</b><br>
+          <span class="muted">${humanDate(f.date)}${f.yearly ? ' · cada año' : ''}</span></span>
+          <button class="btn btn-ghost btn-sm" data-del-fecha="${f.id}">Quitar</button></li>`).join('')
+      : '<li class="muted">Aún no has agregado ninguna.</li>';
+    flist.querySelectorAll('[data-del-fecha]').forEach(b => {
+      b.onclick = () => { Fechas.remove(b.dataset.delFecha); App.render(); renderSettings(el); };
+    });
 
     // Paletas de color.
     el.querySelectorAll('[data-pal]').forEach(b => {
