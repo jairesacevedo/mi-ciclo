@@ -30,20 +30,21 @@ Abre `http://127.0.0.1:8138`. (El respaldo a Drive y la instalación como app re
 1. Crea un repositorio **público** en GitHub, por ejemplo `mi-ciclo`.
    > El *código* es público, pero **tus datos no** viven en el repo (se quedan en tu dispositivo / tu Drive), así que no hay problema de privacidad. Pages en repos privados requiere plan de pago.
 
-2. Sube el proyecto (ya está iniciado como repo git con un commit):
+2. Sube el proyecto (ya está iniciado como repo git, con un commit y el `remote` **ya configurado** a `https://github.com/jairesacevedo/mi-ciclo.git`). Solo falta el push:
 
    ```bash
-   git remote add origin https://github.com/<usuario>/mi-ciclo.git
-   git branch -M main
    git push -u origin main
    ```
+
+   > Si prefieres otro nombre de repo, cambia el remoto antes:
+   > `git remote set-url origin https://github.com/jairesacevedo/OTRO-NOMBRE.git`
 
 3. En GitHub: **Settings → Pages → Source: "Deploy from a branch" → Branch: `main` / `(root)` → Save**.
 
 4. Tras un minuto estará en:
 
    ```
-   https://<usuario>.github.io/mi-ciclo/
+   https://jairesacevedo.github.io/mi-ciclo/
    ```
 
 5. En el celular de Yire: abre ese enlace → menú del navegador → **"Agregar a pantalla de inicio"**. Ya se comporta como app y funciona offline.
@@ -65,7 +66,7 @@ La app no tiene servidor propio, así que el acceso a *tu* Drive lo autorizas *t
 5. Menú → **APIs y servicios → Credenciales → Crear credenciales → ID de cliente de OAuth**:
    - Tipo de aplicación: **Aplicación web**.
    - En **Orígenes de JavaScript autorizados**, agrega (solo el origen, sin ruta):
-     - `https://<usuario>.github.io`
+     - `https://jairesacevedo.github.io`
      - `http://localhost:8138` *(opcional, para probar en local)*
    - Crear → copia el **ID de cliente** (termina en `.apps.googleusercontent.com`).
 6. En la app: **Ajustes → Respaldo automático · Google Drive** → pega el ID → **Guardar ID** → **Conectar con Google Drive** y acepta los permisos.
